@@ -17,12 +17,6 @@ function respostaChegou(resposta){
     renderizarChat()
 }
 
-const promessa = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages');
-
-promessa.then(respostaChegou);
-
-
-
 function renderizarChat(){
     const feedConversa = document.querySelector('.corpo');
     feedConversa.innerHTML = "";
@@ -40,3 +34,46 @@ function renderizarChat(){
         `
     }
 }
+
+function buscarMsgs(){
+const promessa = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages');
+
+promessa.then(respostaChegou);
+}
+
+buscarMsgs();
+
+setInterval(buscarMsgs, 3000);
+
+function mandarMSG(){
+    const remetente = document.querySelector();
+    const destinatario = document.querySelector();
+    const mensagem = document.querySelector();
+    const tipoMsg = document.querySelector();
+
+    const novaMsg = {
+        from:remetente,
+        to:destinatario,
+        text:mensagem,
+        type:tipoMsg
+    };
+
+    dadosChat.push(novaMsg);
+
+    const promise = axios.push('https://mock-api.driven.com.br/api/v6/uol/messages',novaMsg);
+    promise.then(deuCerto);
+    promise.catch(deuErrado);
+    buscarMsgs();
+    renderizarChat();
+}
+
+function deuCerto(){
+    alert("Deu certo!");
+    buscarMsgs();
+}
+
+function deuErrado(){
+    alert("Deu errado!");
+    
+}
+
