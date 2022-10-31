@@ -8,6 +8,34 @@ const Chat = [
 
 let dadosChat = [];
 
+
+Logar();
+
+function Logar(){
+    const nome = { name: prompt("Qual seu lindo nome?") };
+    const promise = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants',nome);
+    promise.catch(deuErrado);
+    
+    buscarMsgs();
+
+    setInterval(buscarMsgs, 3000);
+
+    setInterval(manterConexao,5000,nome);
+
+}
+
+function manterConexao(verificador){
+    const promise = axios.post('https://mock-api.driven.com.br/api/v6/uol/status',verificador);
+    promise.then(respostaconexao);
+}
+
+function respostaconexao(resposta){
+    console.log('Chegou!');
+    console.log(resposta);
+    console.log(resposta.data);
+
+}
+
 function respostaChegou(resposta){
     console.log('Chegou!');
     console.log(resposta);
@@ -41,10 +69,6 @@ const promessa = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages')
 promessa.then(respostaChegou);
 }
 
-buscarMsgs();
-
-setInterval(buscarMsgs, 3000);
-
 function mandarMSG(){
     const remetente = document.querySelector();
     const destinatario = document.querySelector();
@@ -60,7 +84,7 @@ function mandarMSG(){
 
     dadosChat.push(novaMsg);
 
-    const promise = axios.push('https://mock-api.driven.com.br/api/v6/uol/messages',novaMsg);
+    const promise = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages',novaMsg);
     promise.then(deuCerto);
     promise.catch(deuErrado);
     buscarMsgs();
@@ -72,8 +96,15 @@ function deuCerto(){
     buscarMsgs();
 }
 
-function deuErrado(){
-    alert("Deu errado!");
+function deuErrado(resposta){
+    console.log(resposta);
+    if (resposta.response.status === 400){
+        alert("Nome já está sendo usado. Tente outro.");
+        Logar();
+    } else {
+        alert("Algo deu errado. Tente novamente");
+        Logar();
+    }
     
 }
 
