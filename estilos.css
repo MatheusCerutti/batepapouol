@@ -99,3 +99,7 @@ input{
 .chat.private_message{
     background-color: #FFDEDEDC;
 }
+
+.verificarPrivado{
+    display:none;
+}

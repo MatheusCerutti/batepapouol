@@ -27,10 +27,6 @@ function manterConexao(verificador){
 }
 
 function respostaChegou(resposta){
-    console.log('Chegou!');
-    console.log(resposta);
-    console.log(resposta.data);
-
     dadosChat = resposta.data;
     renderizarChat()
 }
@@ -41,17 +37,48 @@ function renderizarChat(){
 
     for(let i = 0; i < dadosChat.length ; i++){
         let msgChat = dadosChat[i];
-        feedConversa.innerHTML +=`
-        <div class = "chat ${msgChat.type}" >
-            <div>
-                <span class="timeChat">${msgChat.time}</span>
-                <span class="nameChat"> ${msgChat.from} </span>
-                <span class="destino ${msgChat.type}"> reservadamente </span>
-                <span class="pessoa ${msgChat.type}">para ${msgChat.to} </span>
-                ${msgChat.text}</div></div>
-        `
-    }
+        console.log(nomeChat);
+        console.log(msgChat.to);
 
+        if(nomeChat === msgChat.to && msgChat.type === "private_message"){
+            feedConversa.innerHTML +=`
+            <div class = "chat ${msgChat.type}" >
+               <div>
+                   <span class="timeChat">${msgChat.time}</span>
+                   <span class="nameChat"> ${msgChat.from} </span>
+                   <span class="destino ${msgChat.type}"> reservadamente </span>
+                   <span class="pessoa ${msgChat.type}">para ${msgChat.to} </span>
+                   ${msgChat.text}
+               </div>
+           </div>
+       `
+        } else if (msgChat.type === "private_message"){
+            feedConversa.innerHTML +=`
+            <div class = "chat ${msgChat.type} verificarPrivado" >
+               <div>
+                   <span class="timeChat">${msgChat.time}</span>
+                   <span class="nameChat"> ${msgChat.from} </span>
+                   <span class="destino ${msgChat.type}"> reservadamente </span>
+                   <span class="pessoa ${msgChat.type}">para ${msgChat.to} </span>
+                   ${msgChat.text}
+               </div>
+           </div>
+       `
+        } else {
+            feedConversa.innerHTML +=`
+            <div class = "chat ${msgChat.type}" >
+               <div>
+                   <span class="timeChat">${msgChat.time}</span>
+                   <span class="nameChat"> ${msgChat.from} </span>
+                   <span class="destino ${msgChat.type}"> reservadamente </span>
+                   <span class="pessoa ${msgChat.type}">para ${msgChat.to} </span>
+                   ${msgChat.text}
+               </div>
+           </div>
+       `
+        }
+    }
+    
     let ultimaMsg = document.querySelectorAll('.chat');
     ultimaMsg[dadosChat.length - 1].scrollIntoView();
 }
@@ -75,7 +102,6 @@ function mandarMSG(){
         text:mensagem,
         type:tipoMsg
     };
-    console.log(novaMsg);
 
     const promise = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages',novaMsg);
     promise.then(deuCerto);
@@ -89,7 +115,6 @@ function deuCerto(){
 }
 
 function deuErrado(resposta){
-    console.log(resposta);
     if (resposta.response.status === 400){
         alert("Nome já está sendo usado. Tente outro.");
         Logar();
