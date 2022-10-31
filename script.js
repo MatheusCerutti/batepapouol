@@ -1,21 +1,18 @@
-const Chat = [
-    {from: "João", to: "Todos", text: "entra na sala...", type: "status", time: "09:21:45"},
-    {from: "João", to: "Todos", text: "Bom dia", type: "message", time: "09:22:28"},
-    {from: "Maria", to: "Todos", text: "Oi João :)", type: "message", time: "09:22:38"},
-    {from: "João", to: "Maria", text: "Oi gatinha quer tc?", type: "private_message", time: "09:22:48"},
-    {from: "Maria", to: "Todos", text: "sai da sala...", type: "status", time: "09:22:58"}
-];
 
 let dadosChat = [];
 
+let nomeChat ="";
 
 Logar();
 
+
+
 function Logar(){
     const nome = { name: prompt("Qual seu lindo nome?") };
+    nomeChat = nome.name;
     const promise = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants',nome);
     promise.catch(deuErrado);
-    
+
     buscarMsgs();
 
     setInterval(buscarMsgs, 3000);
@@ -26,14 +23,7 @@ function Logar(){
 
 function manterConexao(verificador){
     const promise = axios.post('https://mock-api.driven.com.br/api/v6/uol/status',verificador);
-    promise.then(respostaconexao);
-}
-
-function respostaconexao(resposta){
-    console.log('Chegou!');
-    console.log(resposta);
-    console.log(resposta.data);
-
+    promise.catch(deuErrado);
 }
 
 function respostaChegou(resposta){
@@ -61,19 +51,23 @@ function renderizarChat(){
                 ${msgChat.text}</div></div>
         `
     }
+
+    let ultimaMsg = document.querySelectorAll('.chat');
+    ultimaMsg[dadosChat.length - 1].scrollIntoView();
 }
 
 function buscarMsgs(){
 const promessa = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages');
 
 promessa.then(respostaChegou);
+promessa.catch(deuErrado);
 }
 
 function mandarMSG(){
-    const remetente = document.querySelector();
-    const destinatario = document.querySelector();
-    const mensagem = document.querySelector();
-    const tipoMsg = document.querySelector();
+    const remetente = nomeChat;
+    const destinatario = "Todos";
+    const mensagem = document.querySelector(".msgTexto").value;
+    const tipoMsg = "message";
 
     const novaMsg = {
         from:remetente,
@@ -81,8 +75,7 @@ function mandarMSG(){
         text:mensagem,
         type:tipoMsg
     };
-
-    dadosChat.push(novaMsg);
+    console.log(novaMsg);
 
     const promise = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages',novaMsg);
     promise.then(deuCerto);
@@ -92,7 +85,6 @@ function mandarMSG(){
 }
 
 function deuCerto(){
-    alert("Deu certo!");
     buscarMsgs();
 }
 
@@ -102,8 +94,8 @@ function deuErrado(resposta){
         alert("Nome já está sendo usado. Tente outro.");
         Logar();
     } else {
-        alert("Algo deu errado. Tente novamente");
-        Logar();
+        alert("Algo deu errado. Tente novamente.");
+        window.location.reload();
     }
     
 }
